@@ -13,10 +13,20 @@ class LeadAPIHandler:
         self.app.add_url_rule('/leads/<int:id>', view_func=self.update_lead, methods=['PUT'])
         self.app.add_url_rule('/leads/<int:id>', view_func=self.delete_lead, methods=['DELETE'])
 
-    # Retorna todos os leads
+    
     def get_leads(self):
-        leads = self.lead_service.get_all_leads()
-        return jsonify([lead.as_dict() for lead in leads])
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 10, type=int)
+
+        leads_pagination = self.lead_service.get_all_leads_paginated(page, per_page)
+        leads = [lead.as_dict() for lead in leads_pagination.items]
+        return jsonify({
+            'leads': leads,
+            'page': leads_pagination.page,
+            'per_page': leads_pagination.per_page,
+            'total_pages': leads_pagination.pages,
+            'total_leads': leads_pagination.total
+        })
 
     # Retorna um lead específico
     def get_lead(self, id):

@@ -38,3 +38,6 @@ class LeadService:
         lead = self.get_lead_by_id(lead_id)
         self.db.session.delete(lead)
         self.db.session.commit()
+    
+    def get_all_leads_paginated(self, page, per_page):
+        return Lead.query.paginate(page=page, per_page=per_page, error_out=False)

@@ -14,7 +14,7 @@ db_connection.initialize_db(app)
 
 # Gerando leads fictícios
 with app.app_context():
-    generate_leads()
+    generate_leads() 
 
 # Inicializando a API com as rotas
 api_handler = LeadAPIHandler(app, db_connection.get_db())
