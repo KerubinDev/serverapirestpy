@@ -1,9 +1,5 @@
-from flask_sqlalchemy import SQLAlchemy
+from database import db
 
-# Inicializando o banco de dados
-db = SQLAlchemy()
-
-# Definindo o modelo para o Lead
 class Lead(db.Model):
     __tablename__ = 'leads'
     id = db.Column(db.Integer, primary_key=True)
@@ -12,15 +8,18 @@ class Lead(db.Model):
     longitude = db.Column(db.Float, nullable=False)
     temperature = db.Column(db.Float, nullable=False)
     interest = db.Column(db.String(200), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)  # Novo campo
+    telefone = db.Column(db.String(15), nullable=False)  # Novo campo
 
-    def __init__(self, name, latitude, longitude, temperature, interest):
+    def __init__(self, name, latitude, longitude, temperature, interest, email, telefone):
         self.name = name
         self.latitude = latitude
         self.longitude = longitude
         self.temperature = temperature
         self.interest = interest
+        self.email = email
+        self.telefone = telefone
 
-    # Função para retornar os dados como dicionário
     def as_dict(self):
         return {
             'id': self.id,
@@ -28,5 +27,7 @@ class Lead(db.Model):
             'latitude': self.latitude,
             'longitude': self.longitude,
             'temperature': self.temperature,
-            'interest': self.interest
+            'interest': self.interest,
+            'email': self.email,  # Retornando o novo campo
+            'telefone': self.telefone  # Retornando o novo campo
         }
