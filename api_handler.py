@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import jsonify, request
 from lead_service import LeadService
 
 class LeadAPIHandler:
@@ -15,11 +15,18 @@ class LeadAPIHandler:
 
     
     def get_leads(self):
+        # Obtém os parâmetros 'page', 'per_page' e 'name' da URL, com valores padrão caso não sejam fornecidos
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
+        search_name = request.args.get('name', '', type=str)
 
-        leads_pagination = self.lead_service.get_all_leads_paginated(page, per_page)
+        # Chama o serviço para obter leads, passando o nome e parâmetros de paginação
+        leads_pagination = self.lead_service.get_leads_by_name_paginated(search_name, page, per_page)
+
+        # Serializa os leads para o formato JSON
         leads = [lead.as_dict() for lead in leads_pagination.items]
+
+        # Retorna a resposta com os dados da paginação
         return jsonify({
             'leads': leads,
             'page': leads_pagination.page,

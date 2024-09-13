@@ -4,6 +4,11 @@ class LeadService:
     def __init__(self, db):
         self.db = db
 
+    def email_exists(self, email):
+            # Verifica se o e-mail já existe no banco de dados
+            existing_lead = Lead.query.filter_by(email=email).first()
+            return existing_lead is not None
+    
     def create_lead(self, name, latitude, longitude, temperature, interest, email, telefone):
         lead = Lead(
             name=name,
@@ -41,3 +46,11 @@ class LeadService:
     
     def get_all_leads_paginated(self, page, per_page):
         return Lead.query.paginate(page=page, per_page=per_page, error_out=False)
+    
+    def get_leads_by_name_paginated(self, search_name, page, per_page):
+        query = Lead.query
+
+        if search_name:
+            query = query.filter(Lead.name.ilike(f"%{search_name}%"))
+
+        return query.paginate(page=page, per_page=per_page, error_out=False)
